@@ -1,18 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Order } from "./Order";
+import { Name } from "./Name";
 
-@Entity()
+@Entity("user")
 export class User {
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @Column(() => Name)
+  name: Name;
 
-    @Column()
-    firstName: string
+  @Column({
+    unique: true,
+  })
+  email: string;
 
-    @Column()
-    lastName: string
+  @Column()
+  password: string;
 
-    @Column()
-    age: number
-
+  @OneToMany(() => Order, (order) => order.user)
+  order: Order;
 }
