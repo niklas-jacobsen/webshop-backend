@@ -25,13 +25,22 @@ export class Address {
   @Column(() => Name)
   name: Name;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    length: 100,
+  })
   street: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    length: 20,
+  })
   number: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    length: 100,
+  })
   city: string;
 
   @Column({
@@ -41,6 +50,7 @@ export class Address {
   zipcode: number;
 
   @Column({
+    type: "varchar",
     length: 100,
     nullable: true,
     default: null,

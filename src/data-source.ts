@@ -9,6 +9,7 @@ import { Category } from "./entity/Category";
 import { Name } from "./entity/Name";
 
 export const AppDataSource = new DataSource({
+  name: "default",
   type: "postgres",
   host: "localhost",
   port: 5432,

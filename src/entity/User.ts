@@ -11,11 +11,16 @@ export class User {
   name: Name;
 
   @Column({
+    type: "varchar",
+    length: 200,
     unique: true,
   })
   email: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    length: 2000,
+  })
   password: string;
 
   @OneToMany(() => Order, (order) => order.user)

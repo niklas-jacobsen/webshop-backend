@@ -1,4 +1,4 @@
-import * as express from "express";
+/* import * as express from "express";
 import * as bodyParser from "body-parser";
 import { Request, Response } from "express";
 import { AppDataSource } from "./data-source";
@@ -37,12 +37,91 @@ AppDataSource.initialize()
     // ...
 
     // start express server
-    app.listen(5432);
-
-    // insert new users for test
+    app.listen(5000);
 
     console.log(
-      "Express server has started on port 5432. Open http://localhost:5432 to see results"
+      "Express server has started on port 5000. Open http://localhost:5000 to see results"
     );
   })
-  .catch((error) => console.log(error));
+  .catch((error) => console.log(error)); */
+
+import "reflect-metadata";
+import * as express from "express";
+import { Request, Response } from "express";
+import { Routes } from "./routes";
+import { AppDataSource } from "./data-source";
+import { User } from "./entity/User";
+
+const PORT = 5000;
+
+AppDataSource.initialize()
+  .then(async () => {
+    console.log("Data Source initialized");
+
+    const app = express();
+    app.use(express.json());
+
+    app.listen(PORT);
+
+    const userRepository = AppDataSource.getRepository(User);
+
+    function test() {
+      console.log("test");
+    }
+
+    app.get("/users", async (_req: Request, res: Response) => {
+      try {
+        res.send(await userRepository.find());
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    app.get("/user/:id", async (req: Request, res: Response) => {
+      try {
+        res.send(
+          await userRepository.findOne({ where: { id: req.params.id } })
+        );
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    app.post("/user", async (req: Request, res: Response) => {
+      try {
+        const user = await userRepository.save({
+          email: req.body.email,
+          password: req.body.password,
+          name: {
+            first: req.body.firstName,
+            last: req.body.lastName,
+          },
+        });
+
+        res.send(user);
+
+        console.info(`User ${user} ${user.name.last} added`);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    console.log(
+      `Express server has started on port ${PORT}. Click here: http://localhost:${PORT}/`
+    );
+  })
+  .catch((err) => {
+    console.error("Initialization failed with Error", err);
+  });

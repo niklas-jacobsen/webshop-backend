@@ -18,6 +18,9 @@ export class OrderItem {
   @PrimaryColumn()
   productId: number;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    length: 10,
+  })
   quantity: number;
 }

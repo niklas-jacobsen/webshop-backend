@@ -32,7 +32,9 @@ export class Order {
   @ManyToOne(() => Address, (address) => address.order)
   address: Address;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: "date",
+  })
   creation_date: Date;
 
   @Column({

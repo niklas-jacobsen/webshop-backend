@@ -16,21 +16,33 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.product)
   category: Category;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    length: 200,
+  })
   name: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    length: 10,
+  })
   price: number;
 
   @Column({
-    type: "text",
+    type: "varchar",
+    length: 2000,
   })
   description: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+  })
   image_url: string;
 
-  @Column()
+  @Column({
+    type: "varchar",
+    width: 10,
+  })
   stock: number;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
