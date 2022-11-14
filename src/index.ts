@@ -47,10 +47,15 @@ AppDataSource.initialize()
 
 import "reflect-metadata";
 import * as express from "express";
+import * as cors from "cors";
 import { Request, Response } from "express";
 import { Routes } from "./routes";
 import { AppDataSource } from "./data-source";
 import { User } from "./entity/User";
+import { AuthController } from "./controller/AuthController";
+import { auth } from "./middleware/auth";
+
+const authController = new AuthController();
 
 const PORT = 5000;
 
@@ -60,14 +65,11 @@ AppDataSource.initialize()
 
     const app = express();
     app.use(express.json());
+    app.use(cors());
 
     app.listen(PORT);
 
     const userRepository = AppDataSource.getRepository(User);
-
-    function test() {
-      console.log("test");
-    }
 
     app.get("/users", async (_req: Request, res: Response) => {
       try {
@@ -81,7 +83,7 @@ AppDataSource.initialize()
       }
     });
 
-    app.get("/user/:id", async (req: Request, res: Response) => {
+    app.get("/user/:id", [auth], async (req: Request, res: Response) => {
       try {
         res.send(
           await userRepository.findOne({ where: { id: req.params.id } })
@@ -99,7 +101,7 @@ AppDataSource.initialize()
       try {
         const user = await userRepository.save({
           email: req.body.email,
-          password: req.body.password,
+          password: await authController.hashPassword(req.body.password),
           name: {
             first: req.body.firstName,
             last: req.body.lastName,
@@ -108,7 +110,37 @@ AppDataSource.initialize()
 
         res.send(user);
 
-        console.info(`User ${user} ${user.name.last} added`);
+        console.info(`User ${user.name.first} ${user.name.last} added`);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    app.post("/login", async (req: Request, res: Response) => {
+      try {
+        const user = await userRepository.findOne({
+          where: {
+            email: req.body.email,
+          },
+        });
+
+        if (
+          await authController.verifyPassword(req.body.password, user.password)
+        ) {
+          res.status(200).json({
+            status: "success",
+            message: "Successfully logged in",
+          });
+        } else {
+          res.status(500).json({
+            status: "error",
+            message: "Login failed",
+          });
+        }
       } catch (err) {
         console.error(err.message);
         res.status(500).json({
