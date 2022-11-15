@@ -3,6 +3,7 @@ import * as jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { AuthController } from "../controller/AuthController";
 
+//Replace hardcoded secret with env variable later
 export const SECRET_KEY: Secret =
   "lishöosfklghslofjdkughsfuesrjhtkugruetoiu7405934ot8e802745r8iehgosudhofis";
 
@@ -19,10 +20,13 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error();
     }
 
-    const decoded = authController.verifyJWT(token);
+    const decoded = await authController.verifyJWT(token);
     if (!decoded) {
       throw new Error();
     }
+
+    res.locals.userId = decoded;
+    res.locals.token = token;
 
     next();
   } catch (err) {

@@ -1,61 +1,12 @@
-/* import * as express from "express";
-import * as bodyParser from "body-parser";
-import { Request, Response } from "express";
-import { AppDataSource } from "./data-source";
-import { Routes } from "./routes";
-
-AppDataSource.initialize()
-  .then(async () => {
-    // create express app
-    const app = express();
-    app.use(bodyParser.json());
-
-    // register express routes from defined application routes
-    Routes.forEach((route) => {
-      (app as any)[route.method](
-        route.route,
-        (req: Request, res: Response, next: Function) => {
-          const result = new (route.controller as any)()[route.action](
-            req,
-            res,
-            next
-          );
-          if (result instanceof Promise) {
-            result.then((result) =>
-              result !== null && result !== undefined
-                ? res.send(result)
-                : undefined
-            );
-          } else if (result !== null && result !== undefined) {
-            res.json(result);
-          }
-        }
-      );
-    });
-
-    // setup express app here
-    // ...
-
-    // start express server
-    app.listen(5000);
-
-    console.log(
-      "Express server has started on port 5000. Open http://localhost:5000 to see results"
-    );
-  })
-  .catch((error) => console.log(error)); */
-
 import "reflect-metadata";
 import * as express from "express";
 import * as cors from "cors";
 import { Request, Response } from "express";
-import { Routes } from "./routes";
 import { AppDataSource } from "./data-source";
 import { User } from "./entity/User";
+import { Product } from "./entity/Product";
 import { AuthController } from "./controller/AuthController";
 import { auth } from "./middleware/auth";
-
-const authController = new AuthController();
 
 const PORT = 5000;
 
@@ -70,10 +21,26 @@ AppDataSource.initialize()
     app.listen(PORT);
 
     const userRepository = AppDataSource.getRepository(User);
+    const productRepository = AppDataSource.getRepository(Product);
+    const authController = new AuthController();
 
     app.get("/users", async (_req: Request, res: Response) => {
       try {
         res.send(await userRepository.find());
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    app.get("/user/me", [auth], async (req: Request, res: Response) => {
+      try {
+        res.send(
+          await userRepository.findOne({ where: { id: res.locals.userId } })
+        );
       } catch (err) {
         console.error(err.message);
         res.status(500).json({
@@ -97,7 +64,7 @@ AppDataSource.initialize()
       }
     });
 
-    app.post("/user", async (req: Request, res: Response) => {
+    app.post("/register", async (req: Request, res: Response) => {
       try {
         const user = await userRepository.save({
           email: req.body.email,
@@ -129,11 +96,12 @@ AppDataSource.initialize()
         });
 
         if (
-          await authController.verifyPassword(req.body.password, user.password)
+          await authController.verifyPassword(req.body.password, user.password) //if password correct
         ) {
           res.status(200).json({
             status: "success",
-            message: "Successfully logged in",
+            message: "Login successful",
+            token: authController.generateJWT(user.id),
           });
         } else {
           res.status(500).json({
@@ -141,6 +109,55 @@ AppDataSource.initialize()
             message: "Login failed",
           });
         }
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    app.post("/product", async (req: Request, res: Response) => {
+      try {
+        const product = await productRepository.save({
+          category: req.body.category,
+          name: req.body.name,
+          price: req.body.price,
+          description: req.body.description,
+          image_url: req.body.image_url,
+          stock: req.body.stock,
+        });
+
+        res.send(product);
+
+        console.info(`Product ${product.name} added to inventory`);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    app.get("/products", async (_req: Request, res: Response) => {
+      try {
+        res.send(await productRepository.find());
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    app.get("/products/:id", async (req: Request, res: Response) => {
+      try {
+        res.send(
+          await productRepository.findOne({ where: { id: req.params.id } })
+        );
       } catch (err) {
         console.error(err.message);
         res.status(500).json({

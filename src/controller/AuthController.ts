@@ -3,7 +3,6 @@ import * as bcrypt from "bcrypt";
 import { SECRET_KEY } from "../middleware/auth";
 
 const saltRounds = 10;
-//Replace hardcoded secret with env variable later
 
 //add try/catch to all functions later
 export class AuthController {
@@ -15,7 +14,7 @@ export class AuthController {
     return bcrypt.compare(plainPassword, hashedPassword);
   }
 
-  async generateJWT(userId: string) {
+  generateJWT(userId: string) {
     const token = jwt.sign(
       {
         sub: userId,

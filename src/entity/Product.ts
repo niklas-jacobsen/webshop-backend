@@ -11,7 +11,7 @@ import { OrderItem } from "./OrderItem";
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn("increment")
-  id: number;
+  id: string;
 
   @ManyToOne(() => Category, (category) => category.product)
   category: Category;
