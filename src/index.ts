@@ -8,7 +8,7 @@ import { Product } from "./entity/Product";
 import { AuthController } from "./controller/AuthController";
 import { auth } from "./middleware/auth";
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 AppDataSource.initialize()
   .then(async () => {
