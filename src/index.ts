@@ -118,6 +118,17 @@ AppDataSource.initialize()
       }
     });
 
+    app.get("/logout", async (req: Request, res: Response) => {
+      try {
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
     app.post("/product", async (req: Request, res: Response) => {
       try {
         const product = await productRepository.save({
