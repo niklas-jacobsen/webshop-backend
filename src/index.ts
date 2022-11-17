@@ -8,6 +8,7 @@ import { Product } from "./entity/Product";
 import { ProductController } from "./controller/ProductController";
 import { AuthController } from "./controller/AuthController";
 import { auth } from "./middleware/auth";
+import { Address } from "./entity/Address";
 
 const PORT = process.env.PORT || 5000;
 
@@ -21,6 +22,7 @@ AppDataSource.initialize()
 
     app.listen(PORT);
 
+    const addressRepository = AppDataSource.getRepository(Address);
     const userRepository = AppDataSource.getRepository(User);
     const productRepository = AppDataSource.getRepository(Product);
     const authController = new AuthController();
@@ -55,6 +57,26 @@ AppDataSource.initialize()
       try {
         res.send(
           await userRepository.findOne({ where: { id: req.params.id } })
+        );
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+          status: "error",
+          message: err.message,
+        });
+      }
+    });
+
+    app.get("/address/me", [auth], async (req: Request, res: Response) => {
+      try {
+        res.send(
+          JSON.stringify(
+            await addressRepository.findOne({
+              where: {
+                user: { id: res.locals.userId },
+              },
+            })
+          )
         );
       } catch (err) {
         console.error(err.message);
