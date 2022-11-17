@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import { AppDataSource } from "./data-source";
 import { User } from "./entity/User";
 import { Product } from "./entity/Product";
+import { ProductController } from "./controller/ProductController";
 import { AuthController } from "./controller/AuthController";
 import { auth } from "./middleware/auth";
 

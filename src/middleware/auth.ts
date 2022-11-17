@@ -4,8 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { AuthController } from "../controller/AuthController";
 
 //Replace hardcoded secret with env variable later
-export const SECRET_KEY: Secret =
-  "lishöosfklghslofjdkughsfuesrjhtkugruetoiu7405934ot8e802745r8iehgosudhofis";
+export const SECRET_KEY: Secret = process.env.SECRET_KEY;
 
 export interface CustomRequest extends Request {
   token: string | JwtPayload;
