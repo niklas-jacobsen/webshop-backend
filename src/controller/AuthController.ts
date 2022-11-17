@@ -20,7 +20,7 @@ export class AuthController {
         sub: userId,
       },
       SECRET_KEY,
-      { expiresIn: "30 minutes" }
+      { expiresIn: "31 minutes" }
     );
     return token;
   }
