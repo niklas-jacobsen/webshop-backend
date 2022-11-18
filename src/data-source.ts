@@ -28,6 +28,6 @@ export const AppDataSource = new DataSource({
     process.env.ISLOCAL === "true"
       ? null
       : {
-          rejectUnauthorized: true,
+          rejectUnauthorized: false,
         },
 });
