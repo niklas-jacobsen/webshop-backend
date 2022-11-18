@@ -24,7 +24,10 @@ export const AppDataSource = new DataSource({
   entities: [User, OrderItem, Order, Address, Product, Category, Name],
   migrations: [__dirname + "/migration/*.ts"],
   subscribers: [],
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl:
+    process.env.ISLOCAL === "true"
+      ? null
+      : {
+          rejectUnauthorized: true,
+        },
 });
