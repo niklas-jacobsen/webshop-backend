@@ -201,9 +201,7 @@ AppDataSource.initialize()
       }
     });
 
-    console.log(
-      `Express server has started on port ${PORT}. Click here: http://localhost:${PORT}/`
-    );
+    console.log(`Express server has started on port ${PORT}`);
   })
   .catch((err) => {
     console.error("Initialization failed with Error", err);
