@@ -1,4 +1,4 @@
-# Webshop project - frontend
+# Webshop project - backend
 
 This is a simple webshop application that is meant to be a learning project to gain more knowledge in both Front- and Backend development.
 
