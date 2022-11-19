@@ -7,7 +7,9 @@ This is a simple webshop application that is meant to be a learning project to g
 1. Clone both the [frontend](https://github.com/niklas-jacobsen/webshop) and [backend](https://github.com/niklas-jacobsen/webshop-backend) repositories.
 2. Set up the frontend server as explained in the [frontend README](https://github.com/niklas-jacobsen/webshop/blob/main/README.md)
 
-3. Create a .env file and write into it:
+3. Set up a postgres database and name it webshop
+
+4. Create a .env file and write into it:
 
 ```sh
 DATABASE_HOST=localhost
@@ -19,9 +21,9 @@ SECRET_KEY=_Your secret key goes here_
 ISLOCAL=true
 ```
 
-4. run `npm install` to install all necessary dependencies.
+5. run `npm install` to install all necessary dependencies.
 
-5. run `npm run dev` to start the backend express server.
+6. run `npm run dev` to start the backend express server.
 
 ## Documentation
 
