@@ -30,7 +30,7 @@ export class AuthController {
       const payload = jwt.verify(token, SECRET_KEY);
       return payload.sub;
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
       return false;
     }
   }
