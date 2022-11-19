@@ -7,7 +7,7 @@ This is a simple webshop application that is meant to be a learning project to g
 1. Clone both the [frontend](https://github.com/niklas-jacobsen/webshop) and [backend](https://github.com/niklas-jacobsen/webshop-backend) repositories.
 2. Set up the frontend server as explained in the [frontend README](https://github.com/niklas-jacobsen/webshop/blob/main/README.md)
 
-3. Set up a postgres database and name it webshop
+3. Set up a local postgres database
 
 4. Create a .env file and write into it:
 
